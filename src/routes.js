@@ -7,6 +7,8 @@ import { isAuthenticated } from "./services/auth";
 import ListarProdutos from "./pages/admin/produtos/listar-produtos";
 import CadastroProduto from "./pages/admin/produtos/cadastrar-produto";
 import ListarUsuarios from "./pages/admin/usuarios/listar-usuarios";
+import ListarCaracteristicas from "./pages/admin/caracteristicas/listar-caracteriticas";
+import CadastrarCaracteristicas from "./pages/admin/caracteristicas/cadastrar-caracteristicas";
 
 const routes = [
     {
@@ -22,7 +24,17 @@ const routes = [
                 path: "/admin/home",
                 title: 'Home',
                 component: Home
-            }, {
+            }, 
+            {
+                path: "/admin/caracteristicas",
+                title: "Caracteristicas",
+                component: ListarCaracteristicas
+            },
+            {
+                path: "/admin/cadastro-caracteristicas",
+                title: "Cadastrar",
+                component: CadastrarCaracteristicas
+            },{
                 path: "/admin/produtos",
                 title: 'Produtos',
                 component: ListarProdutos

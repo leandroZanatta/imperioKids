@@ -14,9 +14,9 @@ export default function RestTable(props) {
 
     async function getData() {
 
-        let data = await api.get(props.data.url);
+        let request = await api.get(props.data.url);
 
-        setRows(data);
+        setRows(request.data.content);
     }
 
     React.useEffect(() => getData(), []);
