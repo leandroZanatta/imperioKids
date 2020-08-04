@@ -6,6 +6,7 @@ import Home from './pages/admin/main/home'
 import { isAuthenticated } from "./services/auth";
 import ListarProdutos from "./pages/admin/produtos/listar-produtos";
 import CadastroProduto from "./pages/admin/produtos/cadastrar-produto";
+import ListarUsuarios from "./pages/admin/usuarios/listar-usuarios";
 
 const routes = [
     {
@@ -29,6 +30,10 @@ const routes = [
                 path: "/admin/cadastro-produtos",
                 title: 'Cadastro de Produto',
                 component: CadastroProduto
+            }, {
+                path: "/admin/usuarios",
+                title: 'Usuários',
+                component: ListarUsuarios
             }
         ]
     }

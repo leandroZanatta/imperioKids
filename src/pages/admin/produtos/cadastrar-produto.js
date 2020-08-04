@@ -1,8 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { FormControl, InputLabel, Input, FormHelperText, Paper, TextField, Select, MenuItem } from '@material-ui/core';
+import { FormControl, InputLabel, Input, FormHelperText, Paper, TextField, Select, MenuItem, FormControlLabel, Switch } from '@material-ui/core';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import NumberFormat from 'react-number-format';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
 export default function CadastroProduto() {
     const classes = useStyles();
     const [unidade, setUnidade] = React.useState('');
-
+    const [estoqueMinimo, setEstoqueMinimo] = React.useState('');
+    const [controlaEstoque, setcontrolaEstoque] = React.useState(true);
     const [content, setContent] = React.useState('')
 
     const alterouUnidade = (event) => {
@@ -30,6 +32,14 @@ export default function CadastroProduto() {
 
     const alterouContent = (model) => {
         setContent(model);
+    };
+
+    const alterouEstoque = (event) => {
+        setcontrolaEstoque(event.target.checked);
+    };
+
+    const alterouEstoqueMinimo = (event) => {
+        setEstoqueMinimo(event.floatValue);
     };
 
     return (
@@ -50,9 +60,28 @@ export default function CadastroProduto() {
                         <MenuItem value={3}>Pc</MenuItem>
                     </Select>
                 </FormControl>
+                <FormControlLabel className={classes.formControl}
+                    control={
+                        <Switch
+                            color="primary"
+                            checked={controlaEstoque}
+                            onChange={alterouEstoque}
+                            name="controlaEstoque" />
+                    }
+                    label="Controla Estoque"
+                />
+                <NumberFormat
+                    value={estoqueMinimo}
+                    thousandSeparator={true}
+                    customInput={TextField}
+                    onValueChange={alterouEstoqueMinimo}
+                    prefix={'R$'}
+                    disabled={!controlaEstoque} />
+                <TextField id="standard-basic" label="Estoque Máximo" disabled={!controlaEstoque} />
                 <InputLabel id="editor" className={classes.editor}>
                     Breve descrição sobre o Produto
                 </InputLabel>
+
                 <Editor
                     wrapperStyle={{ marginTop: 10 }}
                     editorStyle={{ minHeight: 200 }}
