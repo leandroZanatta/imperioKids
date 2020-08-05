@@ -12,20 +12,22 @@ export default function RestTable(props) {
 
     const [rows, setRows] = React.useState([]);
 
-    async function getData() {
+    React.useEffect(() => {
+        async function fetchData() {
 
-        let request = await api.get(props.data.url);
+            const response = await api.get(props.data.url);
 
-        setRows(request.data.content);
-    }
+            setRows(response.data.content);
+        }
+        fetchData();
 
-    React.useEffect(() => getData(), []);
+    }, []);
 
     return (
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
-                    <TableRow>
+                    <TableRow key={props.data.key}>
                         {
                             props.data.columns.map((item) => <TableCell>{item.label}</TableCell>)
                         }
@@ -39,7 +41,8 @@ export default function RestTable(props) {
                                     props.data.columns.map((column) => <TableCell>{row[column.name]}</TableCell>)
                                 }
                             </TableRow>
-                        ))}
+                        ))
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
