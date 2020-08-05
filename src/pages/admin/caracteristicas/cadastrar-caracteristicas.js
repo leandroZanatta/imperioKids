@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, TableFooter, Button, Container, makeStyles, Paper, Snackbar } from '@material-ui/core';
+import { TextField, Container, makeStyles, Paper, Snackbar, Button } from '@material-ui/core';
 import api from '../../../services/api';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';

@@ -5,26 +5,85 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableHead } from '@material-ui/core';
+import { TableHead, TextField, IconButton, TablePagination } from '@material-ui/core';
 import api from '../services/api';
+import SearchIcon from '@material-ui/icons/Search';
 
 export default function RestTable(props) {
 
     const [rows, setRows] = React.useState([]);
+    const numerolinhas = 5;
+    const [valorPesquisa, setValorPesquisa] = React.useState('');
+    const [page, setPage] = React.useState(0);
+    const [registros, setRegistros] = React.useState(0);
 
-    React.useEffect(() => {
-        async function fetchData() {
+    const pesquisarValor = () => {
 
-            const response = await api.get(props.data.url);
+        if (page === 0) {
+            pesquisar();
 
-            setRows(response.data.content);
+            return;
         }
-        fetchData();
 
-    }, []);
+        setPage(0);
+    }
+
+    const validarEnterPesquisar = (event) => {
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            pesquisarValor();
+        }
+    }
+    const handleChange = (event) => {
+
+        setValorPesquisa(event.target.value);
+    };
+
+
+    const handleChangePage = (event, newPage) => {
+
+        setPage(newPage);
+    };
+
+
+    const pesquisar = () => {
+
+        api.get(props.data.url, {
+            params: {
+                valorPesquisa: valorPesquisa,
+                pagina: page,
+                registros: numerolinhas
+            }
+        }).then(response => {
+
+            const data = response.data;
+
+            setRegistros(data.totalElements);
+            setRows(data.content);
+
+        }).catch(function (error) {
+
+        });
+    }
+    React.useEffect(() => pesquisar(), []);
+    React.useEffect(() => pesquisar(), [page]);
 
     return (
         <TableContainer component={Paper}>
+            <TextField
+                id="pesquisa"
+                value={valorPesquisa}
+                onKeyDown={validarEnterPesquisar}
+                onChange={handleChange}
+                InputProps={{
+                    endAdornment:
+                        <IconButton onClick={pesquisarValor}>
+                            <SearchIcon color="action" />
+                        </IconButton>,
+                }}
+            />
             <Table>
                 <TableHead>
                     <TableRow key={props.data.key}>
@@ -45,6 +104,17 @@ export default function RestTable(props) {
                     }
                 </TableBody>
             </Table>
+            <TablePagination
+                rowsPerPageOptions={[numerolinhas]}
+                labelDisplayedRows={({ from, to, count }) => `Exibindo registros ${from}-${to} de ${count}`}
+                component="div"
+                backIconButtonText='Página Anterior'
+                nextIconButtonText='Próxima Página'
+                count={registros}
+                rowsPerPage={numerolinhas}
+                page={page}
+                onChangePage={handleChangePage}
+            />
         </TableContainer>
     );
 }
