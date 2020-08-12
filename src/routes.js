@@ -9,6 +9,8 @@ import CadastroProduto from "./pages/admin/produtos/cadastrar-produto";
 import ListarUsuarios from "./pages/admin/usuarios/listar-usuarios";
 import ListarCaracteristicas from "./pages/admin/caracteristicas/listar-caracteriticas";
 import CadastrarCaracteristicas from "./pages/admin/caracteristicas/cadastrar-caracteristicas";
+import ListarCategorias from "./pages/admin/categorias/listar-categorias";
+import CadastrarCategorias from "./pages/admin/categorias/cadastrar-categorias";
 
 const routes = [
     {
@@ -24,17 +26,25 @@ const routes = [
                 path: "/admin/home",
                 title: 'Home',
                 component: Home
-            }, 
+            },
             {
                 path: "/admin/caracteristicas",
                 title: "Caracteristicas",
                 component: ListarCaracteristicas
+            }, {
+                path: "/admin/categorias",
+                title: "Categorias",
+                component: ListarCategorias
             },
             {
                 path: "/admin/cadastro-caracteristicas",
                 title: "Cadastrar",
                 component: CadastrarCaracteristicas
-            },{
+            }, {
+                path: "/admin/cadastro-categorias",
+                title: "Cadastrar",
+                component: CadastrarCategorias
+            }, {
                 path: "/admin/produtos",
                 title: 'Produtos',
                 component: ListarProdutos

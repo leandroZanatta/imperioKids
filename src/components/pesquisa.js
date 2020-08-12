@@ -1,238 +1,198 @@
-import React from "react";
-import { withStyles } from '@material-ui/core/styles';
-import DialogContent from '@material-ui/core/DialogContent';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import { Container, TextField, IconButton, Dialog, Toolbar, Typography, TableContainer, TableCell, TableRow, TableHead, Table, TableBody, TablePagination } from "@material-ui/core";
-import SearchIcon from '@material-ui/icons/Search';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import { TextField, IconButton, Paper, TableContainer, TablePagination, Table, TableHead, TableRow, TableBody, TableCell, Dialog, DialogTitle, DialogContent } from '@material-ui/core';
 import api from '../services/api';
-import CloseIcon from '@material-ui/icons/Close';
+import SearchIcon from '@material-ui/icons/Search';
 
-const useStyles = theme => ({
-    root: {
-        padding: theme.spacing(0),
-        paddingBottom: theme.spacing(1),
-        flexGrow: 1,
-        display: 'flex',
-        flexDirection: 'row'
-    },
-    titlePesquisa: {
-        padding: theme.spacing(0),
-        paddingLeft: theme.spacing(3),
-
-    },
-    containerPesquisa: {
-        height: theme.spacing(50)
-    },
-
-    toolbar: {
-        padding: theme.spacing(0)
-    },
-    closeButton: {
-        position: 'absolute',
-        right: theme.spacing(1),
-        top: theme.spacing(1),
-        color: theme.palette.grey[500],
-    },
-
-    title: {
-        textTransform: 'uppercase'
-    },
-
-});
-
-class Pesquisa extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            telaPesquisa: false,
-            rows: [],
-            field: props.id,
-            campoPesquisa: '',
-            direction: 'asc',
-            row: null,
-            page: 0,
-            registros: 0
-        }
+const useStyles = makeStyles((theme) => ({
+    dialog: {
+        width: 800,
+        maxHeight: 500
     }
 
-    validarEnterPesquisar = (event) => {
+}));
+
+
+
+function SimpleDialog(props) {
+
+    const classes = useStyles();
+    const { onClose, open, titulo, data } = props;
+    const [rows, setRows] = React.useState([]);
+    const [valorPesquisa, setValorPesquisa] = React.useState('');
+    const [page, setPage] = React.useState(0);
+    const [registros, setRegistros] = React.useState(0);
+    React.useEffect(() => pesquisar(), []);
+    React.useEffect(() => pesquisar(), [page]);
+
+
+    const pesquisarValor = () => {
+
+        if (page === 0) {
+            pesquisar();
+
+            return;
+        }
+
+        setPage(0);
+    }
+
+    const validarEnterPesquisar = (event) => {
 
         if (event.keyCode === 13) {
             event.preventDefault();
 
-            this.pesquisar();
+            pesquisarValor();
         }
     }
+    const handleChange = (event) => {
 
-    handleChange = prop => event => {
-        this.setState({ [prop]: event.target.value });
+        setValorPesquisa(event.target.value);
     };
 
-    handleClose = () => {
-        this.setState({ telaPesquisa: false });
+
+    const handleChangePage = (event, newPage) => {
+
+        setPage(newPage);
     };
 
-    handleChangePage = (event, newPage) => {
 
-        this.setState({ page: newPage });
+    const pesquisar = () => {
 
-        this.pesquisar();
-    };
-
-    pesquisar = () => {
-        const me = this;
-
-        const { codigoPesquisa } = this.props
-        const { rowsPerPage } = this.props
-       
-        const { campoPesquisa } = this.state
-        const { page } = this.state
-
-        api.get('/pesquisa', {
+        api.get(data.url, {
             params: {
-                codigoPesquisa: codigoPesquisa,
-                campoPesquisa: campoPesquisa,
+                valorPesquisa: valorPesquisa,
                 pagina: page,
-                registros: rowsPerPage
+                registros: data.numerolinhas
             }
         }).then(response => {
 
-            const data = response.data;
+            const retorno = response.data;
 
-            if (data.numeroRegistros === 1) {
-
-                let row = data.rows[0];
-
-                me.selecionarLinha(row);
-
-                return;
-            }
-
-            me.setState({
-                registros: data.numeroRegistros,
-                row: null,
-                rows: data.rows,
-                telaPesquisa: true
-            });
+            setRegistros(retorno.totalElements);
+            setRows(retorno.content);
 
         }).catch(function (error) {
 
         });
     }
 
-    selecionarLinha = (row) => {
 
-        const { formato } = this.props
-        const { changeValue } = this.props;
+    const handleClose = () => {
+        onClose(null);
+    };
 
-        this.setState({
-            row: row,
-            campoPesquisa: formato(row),
-            telaPesquisa: false
-        });
+    const handleItemClick = (value) => {
+        onClose(value);
+    };
 
-        changeValue(row);
-    }
-
-    render() {
-
-        const { classes } = this.props;
-        const { titulo } = this.props;
-        const { rowsPerPage } = this.props
-        const { configs } = this.props
-
-        const { telaPesquisa } = this.state
-        const { registros } = this.state
-        const { page } = this.state
-        const { rows } = this.state
-
-        return (
-            <Container className={classes.root}>
-                <TextField
-                    id="pesquisa"
-                    fullWidth={true}
-                    value={this.state.campoPesquisa}
-                    label={titulo ? titulo : ''}
-                    onKeyDown={this.validarEnterPesquisar}
-                    onChange={this.handleChange("campoPesquisa")}
-                    InputProps={{
-                        endAdornment:
-                            <IconButton onClick={this.pesquisar}>
-                                <SearchIcon color="action" />
-                            </IconButton>,
-                    }}
-                />
-
-                <Dialog
-                    fullWidth={true}
-                    maxWidth='md'
-                    open={telaPesquisa}
-                    onClose={this.handleClose}
-                    aria-labelledby="max-width-dialog-title"
-                >
-                    <MuiDialogTitle disableTypography className={classes.titlePesquisa}>
-                        <Toolbar className={classes.toolbar}>
-                            <Typography component="h2" variant="subtitle1" color="primary" className={classes.title}>
-                                {titulo}
-                            </Typography>
-                            <IconButton onClick={this.handleClose} className={classes.closeButton} >
-                                <CloseIcon />
-                            </IconButton>
-                        </Toolbar>
-                    </MuiDialogTitle >
-                    <DialogContent>
-                        <TableContainer className={classes.containerPesquisa}>
-                            <Table size="small" aria-label="sticky table">
-                                <TableHead>
-                                    <TableRow>
+    return (
+        <Dialog
+            onClose={handleClose}
+            open={open}
+            maxWidth="false"
+            aria-labelledby="simple-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="simple-dialog-title">Pesquisa de {titulo}</DialogTitle>
+            <DialogContent className={classes.dialog}>
+                <TableContainer component={Paper} >
+                    <TextField
+                        id="pesquisa"
+                        value={valorPesquisa}
+                        onKeyDown={validarEnterPesquisar}
+                        onChange={handleChange}
+                        fullWidth
+                        InputProps={{
+                            endAdornment:
+                                <IconButton onClick={pesquisarValor}>
+                                    <SearchIcon color="action" />
+                                </IconButton>,
+                        }}
+                    />
+                    <Table stickyHeader >
+                        <TableHead>
+                            <TableRow key={data.key} >
+                                {
+                                    data.columns.map((item) => <TableCell>{item.label}</TableCell>)
+                                }
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                rows.map((row) => (
+                                    <TableRow key={row[data.key]} onClick={() => handleItemClick(row)}>
                                         {
-                                            configs.map((config, index) => <TableCell style={config.style} key={index}>{config.title}</TableCell>)
+                                            data.columns.map((column) => <TableCell>{row[column.name]}</TableCell>)
                                         }
                                     </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows.map((row, index) => {
-                                        return (
-                                            <TableRow
-                                                hover
-                                                role="checkbox"
-                                                tabIndex={-1}
-                                                key={index}
-                                                onDoubleClick={event => this.selecionarLinha(row)}
-                                            >
-                                                {
-                                                    configs.map((config, index) =>
-                                                        <TableCell
-                                                            key={index}
-                                                            style={config.style}>
-                                                            {config.format(row[config.field])}
-                                                        </TableCell>)
-                                                }
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            rowsPerPageOptions={[rowsPerPage]}
-                            labelDisplayedRows={({ from, to, count }) => `Exibindo registros ${from}-${to} de ${count}`}
-                            component="div"
-                            backIconButtonText='Página Anterior'
-                            nextIconButtonText='Próxima Página'
-                            count={registros}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={this.handleChangePage}
-                        />
-                    </DialogContent>
-                </Dialog>
-            </Container >
-
-        );
-    }
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[data.numerolinhas]}
+                        labelDisplayedRows={({ from, to, count }) => `Exibindo registros ${from}-${to} de ${count}`}
+                        component="div"
+                        backIconButtonText='Página Anterior'
+                        nextIconButtonText='Próxima Página'
+                        count={registros}
+                        rowsPerPage={data.numerolinhas}
+                        page={page}
+                        onChangePage={handleChangePage}
+                    />
+                </TableContainer>
+            </DialogContent>
+        </Dialog>
+    );
 }
 
-export default withStyles(useStyles)(Pesquisa)
+SimpleDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    selectedValue: PropTypes.string.isRequired,
+    titulo: PropTypes.string.isRequired,
+    data: PropTypes.string.isRequired
+};
+
+export default function Pesquisa(props) {
+    const [open, setOpen] = React.useState(false);
+    const { titulo, data, onValueChange, formatValue } = props;
+    const [selectedValue, setSelectedValue] = React.useState('');
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (value) => {
+        setOpen(false);
+
+        let valueString = value != null ? formatValue(value) : '';
+
+        setSelectedValue(valueString)
+
+        onValueChange(value);
+    };
+
+    return (
+        <div>
+            <TextField
+                id="pesquisa"
+                fullWidth={true}
+                value={selectedValue}
+                label={titulo ? titulo : ''}
+                InputProps={{
+                    endAdornment:
+                        <IconButton onClick={handleClickOpen}>
+                            <SearchIcon color="action" />
+                        </IconButton>
+                }}
+            />
+
+            <SimpleDialog titulo={titulo} data={data} open={open} onClose={handleClose} />
+        </div>
+    );
+}
+
+

@@ -194,6 +194,17 @@ class ToolbarMain extends React.Component {
                                 </Link>
                             }
                             {isAuthMenuView(1) &&
+                                <Link to="/admin/categorias">
+                                    <ListItem button>
+                                        <ListItemIcon>
+                                            <DashboardIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Categorias" >
+                                        </ListItemText>
+                                    </ListItem>
+                                </Link>
+                            }
+                            {isAuthMenuView(1) &&
                                 <Link to="/admin/produtos">
                                     <ListItem button>
                                         <ListItemIcon>
