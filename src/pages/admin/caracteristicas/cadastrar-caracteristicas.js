@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TextField, Container, makeStyles, Paper, Snackbar, Button } from '@material-ui/core';
 import api from '../../../services/api';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
+import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -20,6 +21,7 @@ export default function CadastrarCaracteristicas() {
     const [data, setData] = React.useState({ idCaracteristica: null, descricao: '' });
     const [alert, setAlert] = React.useState({ mensagem: '', type: 'warning' });
     const [open, setOpen] = React.useState(false);
+    const { openSnackbar } = useContext(SharedSnackbarContext);
 
     const history = useHistory();
 
@@ -58,9 +60,9 @@ export default function CadastrarCaracteristicas() {
         api.post('caracteristicas', data)
             .then(function (response) {
 
-                openAlert({ mensagem: 'Característica cadastrada com sucesso', type: 'success' });
+                openSnackbar('Característica cadastrada com sucesso');
 
-                setTimeout(() => goBack(), 1000)
+                goBack();
             })
             .catch(function (error) {
 

@@ -8,6 +8,8 @@ import Paper from '@material-ui/core/Paper';
 import { TableHead, TextField, IconButton, TablePagination } from '@material-ui/core';
 import api from '../services/api';
 import SearchIcon from '@material-ui/icons/Search';
+import RowItem from './row-item';
+
 
 export default function RestTable(props) {
 
@@ -90,6 +92,11 @@ export default function RestTable(props) {
                         {
                             props.data.columns.map((item) => <TableCell>{item.label}</TableCell>)
                         }
+                        {props.data.actions &&
+
+                            < TableCell > Ações</TableCell>
+
+                        }
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -98,6 +105,12 @@ export default function RestTable(props) {
                             <TableRow key={row[props.data.key]}>
                                 {
                                     props.data.columns.map((column) => <TableCell>{row[column.name]}</TableCell>)
+                                }{props.data.actions &&
+                                    <TableCell > {
+
+                                        props.data.actions.map(item => <RowItem onClick={() => item.onClick(row)} icon={item.icon} />)
+
+                                    } </TableCell>
                                 }
                             </TableRow>
                         ))
@@ -115,6 +128,6 @@ export default function RestTable(props) {
                 page={page}
                 onChangePage={handleChangePage}
             />
-        </TableContainer>
+        </TableContainer >
     );
 }
