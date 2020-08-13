@@ -6,7 +6,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 const SharedSnackbar = () => (
     <SharedSnackbarConsumer>
-        {({ snackbarIsOpen, message, closeSnackbar }) => (
+        {({ snackbarIsOpen, message, type, closeSnackbar }) => (
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',
@@ -16,7 +16,7 @@ const SharedSnackbar = () => (
                 autoHideDuration={3000}
                 onClose={closeSnackbar}
             >
-                <MuiAlert elevation={6} variant="filled" severity='warning'>
+                <MuiAlert elevation={6} variant="filled" severity={type}>
                     {message}
                 </MuiAlert>
             </Snackbar>

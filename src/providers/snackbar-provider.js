@@ -11,20 +11,24 @@ export class SharedSnackbarProvider extends Component {
         this.state = {
             isOpen: false,
             message: '',
+            type: 'success'
         };
     }
 
-    openSnackbar = message => {
+    openSnackbar = (message, type) => {
         this.setState({
             message,
+            type,
             isOpen: true,
         });
     };
 
     closeSnackbar = () => {
+
         this.setState({
-            message: '',
             isOpen: false,
+            message: '',
+            type: 'success'
         });
     };
 
@@ -38,10 +42,10 @@ export class SharedSnackbarProvider extends Component {
                     closeSnackbar: this.closeSnackbar,
                     snackbarIsOpen: this.state.isOpen,
                     message: this.state.message,
+                    type: this.state.type
                 }}
             >
                 <SharedSnackbar />
-
                 {children}
             </SharedSnackbarContext.Provider>
         );
