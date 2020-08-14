@@ -1,55 +1,45 @@
-import React, { Component } from 'react';
+import React from 'react';
 import SharedSnackbar from '../components/SharedSnackbar.component';
 
 
 export const SharedSnackbarContext = React.createContext();
 
-export class SharedSnackbarProvider extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            isOpen: false,
-            message: '',
-            type: 'success'
-        };
-    }
+export function SharedSnackbarProvider(props) {
 
-    openSnackbar = (message, type) => {
-        this.setState({
-            message,
-            type,
-            isOpen: true,
-        });
+    const [snackbarIsOpen, setSnackbarIsOpen] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const [type, setType] = React.useState('success');
+    const { children } = props;
+
+    const openSnackbar = (message, type) => {
+
+        setMessage(message);
+        setType(type);
+
+        setSnackbarIsOpen(true);
     };
 
-    closeSnackbar = () => {
+    const closeSnackbar = () => {
 
-        this.setState({
-            isOpen: false,
-            message: '',
-            type: 'success'
-        });
+        setSnackbarIsOpen(false);
+
+        setTimeout(() => {
+            setMessage('');
+            setType('success');
+        }, 200)
     };
 
-    render() {
-        const { children } = this.props;
 
-        return (
-            <SharedSnackbarContext.Provider
-                value={{
-                    openSnackbar: this.openSnackbar,
-                    closeSnackbar: this.closeSnackbar,
-                    snackbarIsOpen: this.state.isOpen,
-                    message: this.state.message,
-                    type: this.state.type
-                }}
-            >
-                <SharedSnackbar />
-                {children}
-            </SharedSnackbarContext.Provider>
-        );
-    }
+    return (
+
+        <SharedSnackbarContext.Provider
+            value={{ openSnackbar, closeSnackbar, snackbarIsOpen, message, type }}
+        >
+            <SharedSnackbar />
+            {children}
+        </SharedSnackbarContext.Provider>
+    )
 }
 
 export const SharedSnackbarConsumer = SharedSnackbarContext.Consumer;
