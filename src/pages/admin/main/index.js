@@ -1,15 +1,13 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import ToolbarMain from './ToolbarMain';
 import { Switch, Route } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 import Copyright from '../../../components/Copyright';
 import { isAuthMenuView } from '../../../services/auth';
 import { SharedSnackbarProvider } from '../../../providers/snackbar-provider';
 
 
-const useStyles = (theme) => ({
-
+const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         minHeight: '100vh',
@@ -44,72 +42,61 @@ const useStyles = (theme) => ({
         backgroundColor:
             theme.palette.type === 'dark' ? theme.palette.grey[800] : theme.palette.grey[300],
     }
+}));
 
-});
 
-class Dashboard extends React.Component {
+export default function Dashboard(props) {
 
-    constructor(props) {
-        super(props);
+    const classes = useStyles();
+    const { routes, history } = props;
+
+    const getTitle = () => {
+
+        var rota = routes.find((route) => route.path === history.location.pathname);
+
+        if (rota) {
+
+            return rota.title;
+        }
+        return '';
     }
 
-    render() {
-
-        const { classes } = this.props;
-        const { routes } = this.props;
-        const { history } = this.props;
-
-        const getTitle = () => {
-
-            var rota = routes.find((route) => route.path === history.location.pathname);
-
-            if (rota) {
-
-                return rota.title;
-            }
-            return '';
-        }
-
-
-        const RouteWithSubRoutes = (route) => {
-
-            return (
-                <Route
-                    path={route.path}
-                    render={props => (<route.component {...props} routes={route.routes} />)}
-                />
-            );
-        }
+    const RouteWithSubRoutes = (route) => {
 
         return (
-
-            <div className={classes.root}>
-                <SharedSnackbarProvider>
-
-                    <ToolbarMain history={this.props.history} title={getTitle()} />
-
-                    <div className={classes.content}>
-                        <div className={classes.appBarSpacer} />
-                        <div className={classes.container}>
-
-                            <Grid item xs={12}>
-
-                                <Switch>
-                                    {routes.filter(route => route.codigoPrograma == null || isAuthMenuView(route.codigoPrograma)).map((route, i) => (
-                                        <RouteWithSubRoutes key={i} {...route} />
-                                    ))}
-                                </Switch>
-
-                            </Grid>
-                        </div>
-                        <footer className={classes.footer}>
-                            <Copyright />
-                        </footer>
-                    </div>
-                </SharedSnackbarProvider>
-            </div>
+            <Route
+                path={route.path}
+                render={props => (<route.component {...props} routes={route.routes} />)}
+            />
         );
     }
-}
 
-export default withStyles(useStyles)(Dashboard)
+    return (
+
+        <div className={classes.root}>
+            <SharedSnackbarProvider>
+
+                <ToolbarMain history={props.history} title={getTitle()} />
+
+                <div className={classes.content}>
+                    <div className={classes.appBarSpacer} />
+                    <div className={classes.container}>
+
+                        <Grid item xs={12}>
+
+                            <Switch>
+                                {routes.filter(route => route.codigoPrograma == null || isAuthMenuView(route.codigoPrograma)).map((route, i) => (
+                                    <RouteWithSubRoutes key={i} {...route} />
+                                ))}
+                            </Switch>
+
+                        </Grid>
+                    </div>
+                    <footer className={classes.footer}>
+                        <Copyright />
+                    </footer>
+                </div>
+            </SharedSnackbarProvider>
+        </div>
+    );
+}

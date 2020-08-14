@@ -13,8 +13,6 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-
-
 function SimpleDialog(props) {
 
     const classes = useStyles();

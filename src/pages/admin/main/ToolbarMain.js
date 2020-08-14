@@ -1,26 +1,19 @@
 import React from 'react';
 import clsx from 'clsx';
 import logoutImg from '../../../assets/logout.png';
-import pacientesImg from '../../../assets/pacientes.png';
-import { withStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Typography from '@material-ui/core/Typography';
-import { Drawer, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Typography, IconButton, Toolbar, CssBaseline, Drawer, Divider } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import { logout } from '../../../services/auth';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import { Link } from 'react-router-dom';
 import { isAuthMenuView } from '../../../services/auth';
+import { adminMenu } from '../../../admin-menu';
+import MenuIcon from '@material-ui/icons/Menu';
+import MenuItem from './componets/menu-item';
 
 const drawerWidth = 240;
 
-const useStyles = theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex'
     },
@@ -91,136 +84,64 @@ const useStyles = theme => ({
 
     fixedHeight: {
         height: 240,
-    },
-});
-
-class ToolbarMain extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            open: true
-        }
     }
+}));
 
-    handleDrawerOpen = () => {
-        this.setState({ open: true });
-    };
+export default function ToolbarMain(props) {
 
-    handleDrawerClose = () => {
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(true);
+    const { history, title } = props;
 
-        this.setState({ open: false });
-    };
+    const handleDrawerOpen = () => { setOpen(true) };
+    const handleDrawerClose = () => { setOpen(false) };
 
-    render() {
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <Toolbar className={classes.toolbar}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                        {title}
+                    </Typography>
+                    <IconButton color="inherit" onClick={() => {
+                        logout();
+                        history.push('login');
+                    }
+                    }>
+                        <img src={logoutImg} width={25} height={25} alt="Sair" />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                variant="permanent"
+                classes={{ paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose) }}
+                open={open}
+            >
+                <div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </div>
 
-        const { classes } = this.props;
-        const { open } = this.state;
-        const { history } = this.props;
-        const { title } = this.props;
-
-        return (
-            <div className={classes.root}>
-                <CssBaseline />
-                <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-                    <Toolbar className={classes.toolbar}>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            {title}
-                        </Typography>
-                        <IconButton color="inherit" onClick={() => {
-                            logout();
-                            history.push('login');
-                        }
-                        }>
-                            <img src={logoutImg} width={25} height={25} alt="Sair" />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{ paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose) }}
-                    open={open}
-                >
-                    <div className={classes.toolbarIcon}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            <ChevronLeftIcon />
-                        </IconButton>
+                <Divider />
+                <List>
+                    <div>
+                        {adminMenu.filter(item => item.visible && isAuthMenuView(item.id))
+                            .map((menu, key) => <MenuItem key={key} menu={menu} />)}
                     </div>
+                </List>
+            </Drawer>
+        </div >
+    );
 
-                    <Divider />
-                    <List>
-                        <div>
-                            {isAuthMenuView(1) &&
-                                <Link to="/admin/home">
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <DashboardIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Home" >
-                                        </ListItemText>
-                                    </ListItem>
-                                </Link>
-                            }
-                            {isAuthMenuView(1) &&
-                                <Link to="/admin/usuarios">
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <DashboardIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Usuários" >
-                                        </ListItemText>
-                                    </ListItem>
-                                </Link>
-                            }
-                            {isAuthMenuView(1) &&
-                                <Link to="/admin/caracteristicas">
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <DashboardIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Características" >
-                                        </ListItemText>
-                                    </ListItem>
-                                </Link>
-                            }
-                            {isAuthMenuView(1) &&
-                                <Link to="/admin/categorias">
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <DashboardIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Categorias" >
-                                        </ListItemText>
-                                    </ListItem>
-                                </Link>
-                            }
-                            {isAuthMenuView(1) &&
-                                <Link to="/admin/produtos">
-                                    <ListItem button>
-                                        <ListItemIcon>
-                                            <img src={pacientesImg} width={25} height={25} alt="Pacientes" />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Produtos" >
-                                        </ListItemText>
-                                    </ListItem>
-                                </Link>
-                            }
-                        </div>
-                    </List>
-                </Drawer>
-            </div >
-        );
-    }
 }
-
-export default withStyles(useStyles)(ToolbarMain)

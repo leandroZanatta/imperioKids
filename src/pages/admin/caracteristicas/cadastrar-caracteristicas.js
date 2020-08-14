@@ -35,7 +35,7 @@ export default function CadastrarCaracteristicas() {
 
         api.post('caracteristicas', data)
             .then(() => {
-                debugger
+
                 openSnackbar('Característica cadastrada com sucesso', 'success');
 
                 goBack();

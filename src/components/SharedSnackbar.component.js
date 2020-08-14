@@ -1,5 +1,4 @@
-import { IconButton, Snackbar } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Snackbar } from '@material-ui/core';
 import React from 'react';
 import { SharedSnackbarConsumer } from '../providers/snackbar-provider';
 import MuiAlert from '@material-ui/lab/Alert';

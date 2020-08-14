@@ -1,9 +1,9 @@
-import React from 'react';
-import { TextField, Container, makeStyles, Paper, Snackbar, Button } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { TextField, Container, makeStyles, Paper, Button } from '@material-ui/core';
 import api from '../../../services/api';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import Pesquisa from '../../../components/pesquisa';
+import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -19,34 +19,14 @@ const useStyles = makeStyles((theme) => ({
 export default function CadastrarCategorias() {
 
     const [data, setData] = React.useState({ idCategoria: '', descricao: '' });
-    const [alert, setAlert] = React.useState({ mensagem: '', type: 'warning' });
-    const [open, setOpen] = React.useState(false);
+    const { openSnackbar } = useContext(SharedSnackbarContext);
 
     const history = useHistory();
-
     const classes = useStyles();
-
-    const vertical = 'top';
-    const horizontal = 'center';
 
 
     const handleChange = (event) => {
         setData({ ...data, [event.target.name]: event.target.value });
-    }
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const openAlert = (alert) => {
-
-        setAlert(alert);
-
-        setOpen(true);
     }
 
     const goBack = () => {
@@ -57,40 +37,28 @@ export default function CadastrarCategorias() {
     const handleSubmit = (event) => {
 
         api.post('categorias', data)
-            .then(function (response) {
+            .then(() => {
 
-                openAlert({ mensagem: 'Categoria cadastrada com sucesso', type: 'success' });
+                openSnackbar('Categoria cadastrada com sucesso', 'success');
 
-                setTimeout(() => goBack(), 1000)
+                goBack();
             })
-            .catch(function (error) {
+            .catch((error) => {
 
                 let response = error.response;
 
                 if (response && response.status === 400) {
 
-                    openAlert({ mensagem: response.data.mensagem, type: 'warning' });
+                    openSnackbar(response.data.mensagem, 'warning');
                 } else {
-                    openAlert({ mensagem: 'Ocorreu um erro não tratado pelo servidor.', type: 'error' });
+
+                    openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
                 }
             });
     }
 
     return (
         <Paper className={classes.container}>
-
-            <Snackbar
-                open={open}
-                autoHideDuration={3000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical, horizontal }}
-                key={`${vertical},${horizontal}`}
-            >
-                <MuiAlert elevation={6} variant="filled" severity={alert.type}>
-                    {alert.mensagem}
-                </MuiAlert>
-            </Snackbar>
-
             <form noValidate>
                 <TextField
                     name='idCategoria'
