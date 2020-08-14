@@ -5,14 +5,29 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableHead, TextField, IconButton, TablePagination } from '@material-ui/core';
+import { TableHead, TextField, IconButton, TablePagination, makeStyles } from '@material-ui/core';
 import api from '../services/api';
 import SearchIcon from '@material-ui/icons/Search';
 import RowItem from './row-item';
 
+const useStyles = makeStyles((theme) => ({
+    cabecalho: {
+        display: 'flex',
+        padding: theme.spacing(2)
+    },
+    cabecalhoBotoes: {
+        padding: theme.spacing(0, 2, 0, 0)
+    },
+    cabecalhoPesquisa: {
+        flex: 1,
+        padding: theme.spacing(0, 0)
+    }
+}));
 
 export default function RestTable(props) {
+    const classes = useStyles();
 
+    const { children } = props;
     const [rows, setRows] = React.useState([]);
     const numerolinhas = 5;
     const [valorPesquisa, setValorPesquisa] = React.useState('');
@@ -74,18 +89,27 @@ export default function RestTable(props) {
 
     return (
         <TableContainer component={Paper}>
-            <TextField
-                id="pesquisa"
-                value={valorPesquisa}
-                onKeyDown={validarEnterPesquisar}
-                onChange={handleChange}
-                InputProps={{
-                    endAdornment:
-                        <IconButton onClick={pesquisarValor}>
-                            <SearchIcon color="action" />
-                        </IconButton>,
-                }}
-            />
+            <div className={classes.cabecalho}>
+                <div className={classes.cabecalhoBotoes}>
+                    {children}
+                </div>
+                <TextField
+                    id="pesquisa"
+                    value={valorPesquisa}
+                    size="small"
+                    placeholder="Pesquisar"
+                    onKeyDown={validarEnterPesquisar}
+                    onChange={handleChange}
+                    className={classes.cabecalhoPesquisa}
+                    variant="outlined"
+                    InputProps={{
+                        endAdornment:
+                            <IconButton size='small' onClick={pesquisarValor}>
+                                <SearchIcon color="action" />
+                            </IconButton>,
+                    }}
+                />
+            </div>
             <Table>
                 <TableHead>
                     <TableRow key={props.data.key}>
@@ -94,7 +118,7 @@ export default function RestTable(props) {
                         }
                         {props.data.actions &&
 
-                            < TableCell > Ações</TableCell>
+                            < TableCell style={{ width: props.data.actionWidth ? props.data.actionWidth : 100 }}> Ações</TableCell>
 
                         }
                     </TableRow>
@@ -106,9 +130,9 @@ export default function RestTable(props) {
                                 {
                                     props.data.columns.map((column) => <TableCell>{row[column.name]}</TableCell>)
                                 }{props.data.actions &&
-                                    <TableCell > {
+                                    <TableCell style={{ width: props.data.actionWidth ? props.data.actionWidth : 100 }}> {
 
-                                        props.data.actions.map(item => <RowItem onClick={() => item.onClick(row)} icon={item.icon} />)
+                                        props.data.actions.filter(item => item.condition == null || item.condition(row)).map(item => <RowItem onClick={() => item.onClick(row)} icon={item.icon} />)
 
                                     } </TableCell>
                                 }

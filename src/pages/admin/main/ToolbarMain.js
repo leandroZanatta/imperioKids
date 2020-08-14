@@ -115,7 +115,7 @@ export default function ToolbarMain(props) {
                     </Typography>
                     <IconButton color="inherit" onClick={() => {
                         logout();
-                        history.push('login');
+                        history.push('admin/login');
                     }
                     }>
                         <img src={logoutImg} width={25} height={25} alt="Sair" />

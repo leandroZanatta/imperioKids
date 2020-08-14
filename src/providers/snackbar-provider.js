@@ -23,11 +23,6 @@ export function SharedSnackbarProvider(props) {
     const closeSnackbar = () => {
 
         setSnackbarIsOpen(false);
-
-        setTimeout(() => {
-            setMessage('');
-            setType('success');
-        }, 200)
     };
 
 

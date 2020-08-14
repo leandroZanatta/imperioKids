@@ -1,22 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { FormControl, InputLabel, Input, FormHelperText, Paper, TextField, Select, MenuItem, FormControlLabel, Switch } from '@material-ui/core';
+import { FormControl, InputLabel, Paper, TextField, Select, MenuItem, FormControlLabel, Switch } from '@material-ui/core';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import NumberFormat from 'react-number-format';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(1.5),
-        padding: theme.spacing(3)
-    },
-
-    editor: {
-        marginTop: theme.spacing(3)
-    }
-}));
-
+import { useStyles } from '../../../styles/admin/cadastrar-produtos';
 
 
 export default function CadastroProduto() {

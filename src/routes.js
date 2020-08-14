@@ -4,6 +4,7 @@ import { isAuthenticated } from "./services/auth";
 import DashBoard from './pages/admin/main';
 import Login from "./pages/admin/login";
 import { adminMenu } from "./admin-menu";
+import { SharedSnackbarProvider } from "./providers/snackbar-provider";
 
 const routes = [
     {
@@ -20,15 +21,17 @@ const routes = [
 
 export default function RouteConfigExample() {
     return (
-        <Router>
-            <div>
-                <Switch>
-                    {routes.map((route, i) => (
-                        <RouteWithSubRoutes key={i} {...route} />
-                    ))}
-                </Switch>
-            </div>
-        </Router>
+        <SharedSnackbarProvider>
+            <Router>
+                <div>
+                    <Switch>
+                        {routes.map((route, i) => (
+                            <RouteWithSubRoutes key={i} {...route} />
+                        ))}
+                    </Switch>
+                </div>
+            </Router>
+        </SharedSnackbarProvider>
     );
 }
 

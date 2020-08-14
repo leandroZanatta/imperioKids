@@ -16,9 +16,13 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function CadastrarCategorias() {
+export default function CadastrarCategorias(props) {
 
-    const [data, setData] = React.useState({ idCategoria: '', descricao: '' });
+    const dataEmpty = { idCategoria: '', descricao: '' };
+
+    const { state } = props.location;
+
+    const [data, setData] = React.useState(Object.assign(dataEmpty, state));
     const { openSnackbar } = useContext(SharedSnackbarContext);
 
     const history = useHistory();

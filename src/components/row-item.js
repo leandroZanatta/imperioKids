@@ -15,6 +15,6 @@ export default function RowItem(props) {
 }
 
 RowItem.propTypes = {
-  onclick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
   icon: PropTypes.node.isRequired
 };

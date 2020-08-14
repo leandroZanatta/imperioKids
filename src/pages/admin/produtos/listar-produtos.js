@@ -7,7 +7,5 @@ export default function ListarProdutos() {
         <div>
             <TabelaProdutos />
         </div>
-
-
     );
 }

@@ -74,29 +74,26 @@ export default function Dashboard(props) {
     return (
 
         <div className={classes.root}>
-            <SharedSnackbarProvider>
+            <ToolbarMain history={props.history} title={getTitle()} />
 
-                <ToolbarMain history={props.history} title={getTitle()} />
+            <div className={classes.content}>
+                <div className={classes.appBarSpacer} />
+                <div className={classes.container}>
 
-                <div className={classes.content}>
-                    <div className={classes.appBarSpacer} />
-                    <div className={classes.container}>
+                    <Grid item xs={12}>
 
-                        <Grid item xs={12}>
+                        <Switch>
+                            {routes.filter(route => route.codigoPrograma == null || isAuthMenuView(route.codigoPrograma)).map((route, i) => (
+                                <RouteWithSubRoutes key={i} {...route} />
+                            ))}
+                        </Switch>
 
-                            <Switch>
-                                {routes.filter(route => route.codigoPrograma == null || isAuthMenuView(route.codigoPrograma)).map((route, i) => (
-                                    <RouteWithSubRoutes key={i} {...route} />
-                                ))}
-                            </Switch>
-
-                        </Grid>
-                    </div>
-                    <footer className={classes.footer}>
-                        <Copyright />
-                    </footer>
+                    </Grid>
                 </div>
-            </SharedSnackbarProvider>
-        </div>
+                <footer className={classes.footer}>
+                    <Copyright />
+                </footer>
+            </div>
+        </div >
     );
 }

@@ -5,19 +5,8 @@ import TabelaCategorias from './components/tabela-categorias';
 
 export default function ListarCategorias() {
 
-
-    const history = useHistory();
-
-    const abrircadastro = () => {
-
-        history.push('/admin/cadastro-categorias')
-    }
-
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={abrircadastro}>
-                Adicionar
-            </Button>
             <TabelaCategorias />
         </div>
 
