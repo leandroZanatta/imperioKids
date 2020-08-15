@@ -1,45 +1,106 @@
-import React from 'react';
-import { FormControl, InputLabel, Paper, TextField, Select, MenuItem, FormControlLabel, Switch } from '@material-ui/core';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import NumberFormat from 'react-number-format';
+import React, { useContext, useRef } from 'react';
+import { FormControl, InputLabel, Paper, TextField, Select, MenuItem, FormControlLabel, Switch, Container, Button } from '@material-ui/core';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { useStyles } from '../../../styles/admin/cadastrar-produtos';
+import Pesquisa from '../../../components/pesquisa';
+import { useHistory } from 'react-router-dom';
+import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
+import api from '../../../services/api';
 
 
-export default function CadastroProduto() {
+export default function CadastroProduto(props) {
+
     const classes = useStyles();
-    const [unidade, setUnidade] = React.useState('');
-    const [estoqueMinimo, setEstoqueMinimo] = React.useState('');
-    const [controlaEstoque, setcontrolaEstoque] = React.useState(true);
-    const [content, setContent] = React.useState('')
+    const history = useHistory();
+    const editor = useRef(null);
 
-    const alterouUnidade = (event) => {
-        setUnidade(event.target.value);
-    };
+    const config = {
+        readonly: false
+    }
 
-    const alterouContent = (model) => {
-        setContent(model);
+    const dataEmpty = {
+        idProduto: '',
+        descricao: '',
+        descricaoConteudo: '',
+        codigoCategoria: '',
+        codigoUnidade: null,
+        controlaEstoque: true,
+        produtoOferta: false
     };
+    const { state } = props.location;
+    const [data, setData] = React.useState(Object.assign(dataEmpty, state));
 
-    const alterouEstoque = (event) => {
-        setcontrolaEstoque(event.target.checked);
-    };
+    const { openSnackbar } = useContext(SharedSnackbarContext);
+    const handleChange = (name, value) => {
+        setData({ ...data, [name]: value });
+    }
 
-    const alterouEstoqueMinimo = (event) => {
-        setEstoqueMinimo(event.floatValue);
-    };
+    const goBack = () => {
+
+        history.push('/admin/produtos');
+    }
+
+    const handleSubmit = (event) => {
+
+        api.post('produtos', data)
+            .then(() => {
+
+                openSnackbar('Produto cadastrado com sucesso', 'success');
+
+                goBack();
+            })
+            .catch((error) => {
+
+                let response = error.response;
+
+                if (response && response.status === 400) {
+
+                    openSnackbar(response.data.mensagem, 'warning');
+                } else {
+
+                    openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
+                }
+            });
+    }
 
     return (
         <Paper className={classes.root}>
             <form noValidate autoComplete="off">
-                <TextField id="standard-basic" fullWidth label="Descrição" />
+                <TextField
+                    name='idProduto'
+                    value={data.idProduto}
+                    label="Código"
+                    disabled={true}
+                />
+                <TextField
+                    value={data.descricao}
+                    onChange={event => handleChange('descricao', event.target.value)}
+                    fullWidth
+                    label="Descrição"
+                />
+                <Pesquisa
+                    codigoPesquisa={1}
+                    rowsPerPage={20}
+                    onValueChange={item => handleChange('codigoCategoria', item != null ? item.idCategoria : null)}
+                    formatValue={(item) => item.idCategoria + ' - ' + item.descricao}
+                    data={{
+                        numerolinhas: 20,
+                        key: 'idCategoria',
+                        url: 'categorias',
+                        columns: [
+                            { label: 'Código', name: 'idCategoria' },
+                            { label: 'Descrição', name: 'descricao' }
+                        ]
+                    }}
+                    titulo="Categoria"
+                />
                 <FormControl fullWidth className={classes.formControl}>
                     <InputLabel id="lb-unidade">Unidade de Medida</InputLabel>
                     <Select
                         labelId="lb-unidade"
-                        id="demo-simple-select"
-                        value={unidade}
-                        onChange={alterouUnidade}
+                        value={data.codigoUnidade}
+                        onChange={event => handleChange('codigoUnidade', event.target.value)}
                         displayEmpty
                     >
                         <MenuItem value={1}>Kg</MenuItem>
@@ -47,34 +108,47 @@ export default function CadastroProduto() {
                         <MenuItem value={3}>Pc</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControlLabel className={classes.formControl}
+                <FormControlLabel
+                    className={classes.formControl}
                     control={
                         <Switch
                             color="primary"
-                            checked={controlaEstoque}
-                            onChange={alterouEstoque}
-                            name="controlaEstoque" />
+                            checked={data.controlaEstoque}
+                            onChange={event => handleChange('controlaEstoque', event.target.checked)}
+                            name="controlaEstoque"
+                        />
                     }
                     label="Controla Estoque"
                 />
-                <NumberFormat
-                    value={estoqueMinimo}
-                    thousandSeparator={true}
-                    customInput={TextField}
-                    onValueChange={alterouEstoqueMinimo}
-                    prefix={'R$'}
-                    disabled={!controlaEstoque} />
-                <TextField id="standard-basic" label="Estoque Máximo" disabled={!controlaEstoque} />
-                <InputLabel id="editor" className={classes.editor}>
-                    Breve descrição sobre o Produto
-                </InputLabel>
-
-                <Editor
-                    wrapperStyle={{ marginTop: 10 }}
-                    editorStyle={{ minHeight: 200 }}
-                    editorState={content}
-                    onEditorStateChange={alterouContent}
+                <FormControlLabel
+                    className={classes.formControl}
+                    control={
+                        <Switch
+                            color="primary"
+                            checked={data.produtoOferta}
+                            onChange={event => handleChange('produtoOferta', event.target.checked)}
+                            name="produtoOferta"
+                        />
+                    }
+                    label="Produto em Oferta"
                 />
+                <InputLabel className={classes.editor}>Breve descrição sobre o Produto</InputLabel>
+                <ReactQuill theme="snow" value={data.descricaoConteudo} onChange={content => handleChange('descricaoConteudo', content)} />
+                <Container className={classes.containerAcao}>
+                    <Button
+                        onClick={handleSubmit}
+                        variant='contained'
+                        color='primary'>
+                        Salvar
+                    </Button>
+                    <Button
+                        onClick={goBack}
+                        style={{ marginLeft: 5 }}
+                        variant='contained'
+                        color='secondary'>
+                        Cancelar
+                    </Button>
+                </Container>
             </form>
         </Paper>
     );

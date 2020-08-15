@@ -182,7 +182,7 @@ export default function Pesquisa(props) {
                 label={titulo ? titulo : ''}
                 InputProps={{
                     endAdornment:
-                        <IconButton onClick={handleClickOpen}>
+                        <IconButton size='small' onClick={handleClickOpen}>
                             <SearchIcon color="action" />
                         </IconButton>
                 }}

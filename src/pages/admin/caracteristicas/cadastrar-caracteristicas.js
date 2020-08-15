@@ -15,9 +15,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function CadastrarCaracteristicas() {
+export default function CadastrarCaracteristicas(props) {
 
-    const [data, setData] = React.useState({ idCaracteristica: null, descricao: '' });
+    const dataEmpty = { idCaracteristica: null, descricao: '' };
+    const { state } = props.location;
+
+    const [data, setData] = React.useState(Object.assign(dataEmpty, state));
     const { openSnackbar } = useContext(SharedSnackbarContext);
     const history = useHistory();
     const classes = useStyles();
