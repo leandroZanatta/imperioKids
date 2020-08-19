@@ -8,6 +8,7 @@ import CadastrarCategorias from "./pages/admin/categorias/cadastrar-categorias";
 import ListarProdutos from "./pages/admin/produtos/listar-produtos";
 import CadastroProduto from "./pages/admin/produtos/cadastrar-produto";
 import ListarUsuarios from "./pages/admin/usuarios/listar-usuarios";
+import CadastrarImagensProduto from './pages/admin/produtos/cadastrar-imagens';
 
 export const adminMenu = [
     {
@@ -58,6 +59,12 @@ export const adminMenu = [
         title: 'Cadastro de Produto',
         visible: false,
         component: CadastroProduto
+    }, {
+        id: 1,
+        path: "/admin/cadastro-produtos-imagem",
+        title: 'Cadastro de Imagens',
+        visible: false,
+        component: CadastrarImagensProduto
     }, {
         id: 1,
         path: "/admin/usuarios",

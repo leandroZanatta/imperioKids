@@ -5,6 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CachedIcon from '@material-ui/icons/Cached';
 import AddIcon from '@material-ui/icons/Add';
+import ImageIcon from '@material-ui/icons/Image';
 import { useHistory } from 'react-router-dom';
 import { SharedSnackbarContext } from '../../../../providers/snackbar-provider';
 import api from '../../../../services/api';
@@ -24,6 +25,11 @@ export default function TabelaProdutos() {
         history.push('/admin/cadastro-produtos', row);
     }
 
+    const handleImages = (row) => {
+
+        history.push('/admin/cadastro-produtos-imagem', row);
+    }
+
     const handleDelete = (row) => {
 
         api.delete(`/produtos/${row.idProduto}`).then(() => {
@@ -39,6 +45,7 @@ export default function TabelaProdutos() {
             openSnackbar('Produto reincluido com sucesso', 'success');
         }).catch(error => apiError(error));
     }
+
 
 
     const apiError = (error) => {
@@ -63,7 +70,9 @@ export default function TabelaProdutos() {
                 columns: [
                     { label: 'Código', name: 'idProduto' },
                     { label: 'Descrição', name: 'descricao' }
-                ], actions: [
+                ],
+                actionWidth: 140,
+                actions: [
                     {
                         onClick: handleEdit,
                         icon: <EditIcon color='primary' />,
@@ -75,6 +84,9 @@ export default function TabelaProdutos() {
                         condition: item => item.dataExclusao != null,
                         onClick: handleReinclude,
                         icon: <CachedIcon color='primary' />,
+                    }, {
+                        onClick: handleImages,
+                        icon: <ImageIcon color='primary' />,
                     }
                 ]
             }

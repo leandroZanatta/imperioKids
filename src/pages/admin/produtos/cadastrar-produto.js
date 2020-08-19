@@ -13,11 +13,6 @@ export default function CadastroProduto(props) {
 
     const classes = useStyles();
     const history = useHistory();
-    const editor = useRef(null);
-
-    const config = {
-        readonly: false
-    }
 
     const dataEmpty = {
         idProduto: '',
@@ -26,7 +21,8 @@ export default function CadastroProduto(props) {
         codigoCategoria: '',
         codigoUnidade: null,
         controlaEstoque: true,
-        produtoOferta: false
+        produtoOferta: false,
+        produtoDestaque: false
     };
     const { state } = props.location;
     const [data, setData] = React.useState(Object.assign(dataEmpty, state));
@@ -131,6 +127,19 @@ export default function CadastroProduto(props) {
                         />
                     }
                     label="Produto em Oferta"
+                />
+
+                <FormControlLabel
+                    className={classes.formControl}
+                    control={
+                        <Switch
+                            color="primary"
+                            checked={data.produtoDestaque}
+                            onChange={event => handleChange('produtoDestaque', event.target.checked)}
+                            name="produtoDestaque"
+                        />
+                    }
+                    label="Produto em Destaque"
                 />
                 <InputLabel className={classes.editor}>Breve descrição sobre o Produto</InputLabel>
                 <ReactQuill theme="snow" value={data.descricaoConteudo} onChange={content => handleChange('descricaoConteudo', content)} />
