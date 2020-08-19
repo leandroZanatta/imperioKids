@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Copyright from '../../../components/Copyright';
+import ItemVenda from './components/item-venda';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -155,43 +156,7 @@ export default function Loja() {
             {/* End hero unit */}
             <Container maxWidth="md" component="main">
                 <Grid container spacing={5} alignItems="flex-end">
-                    {tiers.map((tier) => (
-                        // Enterprise card is full width at sm breakpoint
-                        <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={4}>
-                            <Card>
-                                <CardHeader
-                                    title={tier.title}
-                                    subheader={tier.subheader}
-                                    titleTypographyProps={{ align: 'center' }}
-                                    subheaderTypographyProps={{ align: 'center' }}
-                                    action={tier.title === 'Pro' ? <StarIcon /> : null}
-                                    className={classes.cardHeader}
-                                />
-                                <CardContent>
-                                    <div className={classes.cardPricing}>
-                                        <Typography component="h2" variant="h3" color="textPrimary">
-                                            ${tier.price}
-                                        </Typography>
-                                        <Typography variant="h6" color="textSecondary">
-                                            /mo
-                    </Typography>
-                                    </div>
-                                    <ul>
-                                        {tier.description.map((line) => (
-                                            <Typography component="li" variant="subtitle1" align="center" key={line}>
-                                                {line}
-                                            </Typography>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                                <CardActions>
-                                    <Button fullWidth variant={tier.buttonVariant} color="primary">
-                                        {tier.buttonText}
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))}
+                    {tiers.map((tier) => <ItemVenda tier={tier} />)}
                 </Grid>
             </Container>
             {/* Footer */}
