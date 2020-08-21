@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useStyles } from '../../../styles/admin/cadastrar-imagens';
-import { Paper, Button, Dialog, DialogContent, DialogContentText, TextField, DialogActions, Input } from '@material-ui/core';
+import { Paper, Button, Dialog, DialogContent, DialogActions } from '@material-ui/core';
 import TabelaImagens from './components/tabela-imagens';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import { SharedSnackbarContext } from '../../../providers/snackbar-provider';

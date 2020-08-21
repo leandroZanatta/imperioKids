@@ -33,9 +33,6 @@ export default function TabelaImagens(props) {
     const [rows, setRows] = React.useState([]);
     const { openSnackbar } = useContext(SharedSnackbarContext);
 
-    React.useEffect(() => pesquisar(), []);
-
-
     const pesquisar = () => {
 
         api.get(`/produtos/imagem/${codigoProduto}`).then(response => {
@@ -57,6 +54,9 @@ export default function TabelaImagens(props) {
                 }
             });
     }
+
+
+    React.useEffect(pesquisar, []);
 
     return (
         <TableContainer component={Paper}>
@@ -87,7 +87,7 @@ export default function TabelaImagens(props) {
                                 </TableCell>
                                 <TableCell>{row.idImagemProduto}</TableCell>
                                 <TableCell>{row.local}</TableCell>
-                                <TableCell><img src={`${row.type},${row.content}`} height={50} /></TableCell>
+                                <TableCell><img src={row.local} height={50} alt="" /></TableCell>
                             </TableRow>
                         ))
                     }

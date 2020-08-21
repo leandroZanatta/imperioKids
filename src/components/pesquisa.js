@@ -21,9 +21,6 @@ function SimpleDialog(props) {
     const [valorPesquisa, setValorPesquisa] = React.useState('');
     const [page, setPage] = React.useState(0);
     const [registros, setRegistros] = React.useState(0);
-    React.useEffect(() => pesquisar(), []);
-    React.useEffect(() => pesquisar(), [page]);
-
 
     const pesquisarValor = () => {
 
@@ -84,6 +81,9 @@ function SimpleDialog(props) {
     const handleItemClick = (value) => {
         onClose(value);
     };
+
+    React.useEffect(pesquisar, []);
+    React.useEffect(pesquisar, [page]);
 
     return (
         <Dialog

@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { FormControl, InputLabel, Paper, TextField, Select, MenuItem, FormControlLabel, Switch, Container, Button } from '@material-ui/core';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';

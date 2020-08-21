@@ -84,8 +84,8 @@ export default function RestTable(props) {
 
         });
     }
-    React.useEffect(() => pesquisar(), []);
-    React.useEffect(() => pesquisar(), [page]);
+    React.useEffect(pesquisar, []);
+    React.useEffect(pesquisar, [page]);
 
     return (
         <TableContainer component={Paper}>

@@ -4,8 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import { Grid, makeStyles } from '@material-ui/core';
 import Copyright from '../../../components/Copyright';
 import { isAuthMenuView } from '../../../services/auth';
-import { SharedSnackbarProvider } from '../../../providers/snackbar-provider';
-
 
 const useStyles = makeStyles((theme) => ({
     root: {
