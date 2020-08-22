@@ -9,6 +9,7 @@ import api from '../../../services/api';
 import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
 import ToolbarApp from './components/toolbar-app';
 import { TablePagination } from '@material-ui/core';
+import SliderDestaques from './components/slider-destaques';
 
 const useStyles = makeStyles((theme) => ({
     '@global': {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     heroContent: {
-        padding: theme.spacing(8, 0, 6),
+        padding: theme.spacing(2, 0, 6),
     },
 
     paginacao: {
@@ -96,7 +97,7 @@ export default function Loja() {
             <ToolbarApp />
 
             <Container maxWidth="sm" component="main" className={classes.heroContent}>
-                Content
+                <SliderDestaques />
             </Container>
 
             <Container maxWidth="md" component="main">
