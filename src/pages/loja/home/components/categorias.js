@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Container, Checkbox, Paper } from '@material-ui/core';
+import { makeStyles, Container, Checkbox, Paper, Card, CardHeader, CardContent } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import api from '../../../../services/api';
 import Accordion from '@material-ui/core/Accordion';
@@ -9,6 +9,16 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
+
+    cardTitle: {
+        height: 45,
+        backgroundColor: '#0081BD',
+        color: "#FAFAFA"
+    },
+
+    cardContent: {
+        padding: 0,
+    },
 
     acordion: {
         padding: 0,
@@ -27,6 +37,8 @@ const useStyles = makeStyles((theme) => ({
         height: 40,
         minHeight: 40,
         paddingLeft: 0,
+        borderBottom: '1px solid #CCC',
+        backgroundColor: '#DEDEDE'
     },
 
     acordionDetails: {
@@ -42,7 +54,9 @@ const useStyles = makeStyles((theme) => ({
         minHeight: 40,
         backgroundColor: '#FFF',
         borderRadius: 0,
-        boxShadow: 'none'
+        boxShadow: 'none',
+        borderBottom: '1px solid #CCC',
+        backgroundColor: '#DEDEDE'
     },
 
     descricaoCategoria: {
@@ -138,10 +152,13 @@ export default function Categorias(props) {
     }
 
     return (
-        <Container>
-            {
-                categorias.map(categoria => renderCategoria(categoria))
-            }
-        </Container>
+        <Card>
+            <CardHeader className={classes.cardTitle} title="Categorias" />
+            <CardContent className={classes.cardContent}>
+                {
+                    categorias.map(categoria => renderCategoria(categoria))
+                }
+            </CardContent>
+        </Card>
     )
 }
