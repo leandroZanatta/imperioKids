@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
         borderStyle: 'solid',
         borderColor: '#CCC',
         marginBottom: theme.spacing(2),
+        cursor: 'pointer'
     },
 }));
 
@@ -27,11 +29,17 @@ export default function ItemVenda(props) {
 
     const { row } = props;
     const classes = useStyles();
+    const history = useHistory();
+
+    const exibirDetalheProduto = () => {
+
+        history.push(`/detalhe-produto/${row.idProduto}`)
+    }
 
     return (
         <Grid item xs={6} sm={4} md={3}>
 
-            <div className={classes.cardPricing}>
+            <div className={classes.cardPricing} onClick={exibirDetalheProduto}>
                 <img src={row.imageUrl} height={250} alt="" />
                 <Typography color="textSecondary">
                     {row.descricao}

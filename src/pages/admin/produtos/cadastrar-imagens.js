@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useStyles } from '../../../styles/admin/cadastrar-imagens';
 import { Paper, Button, Dialog, DialogContent, DialogActions } from '@material-ui/core';
 import TabelaImagens from './components/tabela-imagens';
@@ -6,7 +6,7 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
 import api from '../../../services/api';
 export default function CadastrarImagensProduto(props) {
-
+    const childRef = useRef();
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [imagem, setImagem] = React.useState(null);
@@ -32,25 +32,26 @@ export default function CadastrarImagensProduto(props) {
                     imagem: reader.result.replace(/^data:.+;base64,/, ''),
                     descricao: imagem.name,
                     codigoProduto: state.idProduto
-                })
-                    .then(() => {
+                }).then(() => {
 
-                        handleClose();
+                    handleClose();
 
-                        openSnackbar('Imagem Cadastrada com sucesso', 'success');
-                    })
-                    .catch((error) => {
+                    openSnackbar('Imagem Cadastrada com sucesso', 'success');
 
-                        let response = error.response;
+                    childRef.current.reload();
 
-                        if (response && response.status === 400) {
+                }).catch((error) => {
 
-                            openSnackbar(response.data.mensagem, 'warning');
-                        } else {
+                    let response = error.response;
 
-                            openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
-                        }
-                    });
+                    if (response && response.status === 400) {
+
+                        openSnackbar(response.data.mensagem, 'warning');
+                    } else {
+
+                        openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
+                    }
+                });
             };
 
             reader.readAsDataURL(imagem);
@@ -63,7 +64,7 @@ export default function CadastrarImagensProduto(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <TabelaImagens codigoProduto={state.idProduto}>
+                <TabelaImagens ref={childRef} codigoProduto={state.idProduto}>
                     <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                         <AddAPhotoIcon color="action" className={classes.buttonAddPhoto} />
                         Cadastrar Imagem
@@ -79,7 +80,7 @@ export default function CadastrarImagensProduto(props) {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
-                                Cancel
+                                Cancelar
                             </Button>
                             <Button onClick={saveImage} color="primary">
                                 Salvar

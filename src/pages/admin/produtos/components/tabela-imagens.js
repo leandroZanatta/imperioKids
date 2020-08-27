@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, forwardRef, useImperativeHandle } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,18 +20,52 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const handleChange = () => {
-
-}
 
 
 
-export default function TabelaImagens(props) {
+const TabelaImagens = forwardRef((props, ref) => {
+    useImperativeHandle(
+        ref,
+        () => ({
+            reload() {
+                pesquisar();
+            }
+        }),
+    )
     const classes = useStyles();
 
     const { children, codigoProduto } = props;
     const [rows, setRows] = React.useState([]);
     const { openSnackbar } = useContext(SharedSnackbarContext);
+
+
+    const handleChange = (checked, row) => {
+
+        if (!checked) {
+            openSnackbar('Não é possivel desmarcar a imagem.', 'warning');
+
+            return;
+        }
+
+        api.put(`/produtos/${codigoProduto}/imagem/${row.idImagemProduto}`).then(response => {
+
+            rows.forEach(item => item.imagemPrincipal = item.idImagemProduto === row.idImagemProduto);
+
+            openSnackbar('Imagem alterada com sucesso.', 'success');
+        })
+            .catch((error) => {
+
+                let response = error.response;
+
+                if (response && response.status === 400) {
+
+                    openSnackbar(response.data.mensagem, 'warning');
+                } else {
+
+                    openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
+                }
+            });
+    }
 
     const pesquisar = () => {
 
@@ -81,7 +115,7 @@ export default function TabelaImagens(props) {
                                 <TableCell>
                                     <Checkbox
                                         checked={row.imagemPrincipal}
-                                        onChange={handleChange}
+                                        onChange={(event, checked) => handleChange(checked, row)}
                                         inputProps={{ 'aria-label': 'primary checkbox' }}
                                     />
                                 </TableCell>
@@ -95,4 +129,6 @@ export default function TabelaImagens(props) {
             </Table>
         </TableContainer >
     );
-}
+})
+
+export default TabelaImagens;

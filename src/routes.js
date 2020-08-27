@@ -5,13 +5,22 @@ import DashBoard from './pages/admin/main';
 import Login from "./pages/admin/login";
 import { adminMenu } from "./admin-menu";
 import { SharedSnackbarProvider } from "./providers/snackbar-provider";
-import Loja from "./pages/loja/main";
+import Loja from "./pages/loja";
+import DetalheProduto from "./pages/loja/detalhe";
+import HomePage from "./pages/loja/home";
 
 const routes = [
     {
-        exact: true,
         path: "/",
-        component: Loja
+        component: Loja,
+        routes: [{
+            exact: true,
+            path: "/",
+            component: HomePage
+        }, {
+            path: "/detalhe-produto/:idProduto",
+            component: DetalheProduto
+        }]
     }, {
         path: "/admin/login",
         component: Login

@@ -52,7 +52,7 @@ export default function MenuAutenticacao() {
     };
 
     const responseFacebook = (data) => {
-        debugger
+
     }
 
     return (
