@@ -33,7 +33,7 @@ export default function ItemVenda(props) {
 
     const exibirDetalheProduto = () => {
 
-        history.push(`/detalhe-produto/${row.idProduto}`)
+        history.push(`/loja/detalhe-produto/${row.idProduto}`)
     }
 
     return (

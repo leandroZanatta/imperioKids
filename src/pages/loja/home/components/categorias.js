@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Container, Checkbox, Paper, Card, CardHeader, CardContent } from '@material-ui/core';
+import { makeStyles, Checkbox, Paper, Card, CardHeader, CardContent } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import api from '../../../../services/api';
 import Accordion from '@material-ui/core/Accordion';
@@ -97,7 +97,7 @@ export default function Categorias(props) {
                 onClick={(event) => {
                     event.stopPropagation();
 
-                    history.push(`/?category=${categoria.codigoCategoria}`)
+                    history.push(`/loja/?category=${categoria.codigoCategoria}`)
                 }}
             />
         )

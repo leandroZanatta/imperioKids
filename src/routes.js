@@ -9,16 +9,24 @@ import Loja from "./pages/loja";
 import DetalheProduto from "./pages/loja/detalhe";
 import HomePage from "./pages/loja/home";
 
+const RedirectTo = () => {
+    return <Redirect to='/loja' />
+};
+
 const routes = [
     {
         path: "/",
+        exact: true,
+        component: RedirectTo
+    }, {
+        path: "/loja",
         component: Loja,
         routes: [{
             exact: true,
-            path: "/",
+            path: "/loja/",
             component: HomePage
         }, {
-            path: "/detalhe-produto/:idProduto",
+            path: "/loja/detalhe-produto/:idProduto",
             component: DetalheProduto
         }]
     }, {

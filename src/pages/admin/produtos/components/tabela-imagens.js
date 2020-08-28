@@ -5,9 +5,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableHead, makeStyles, Checkbox } from '@material-ui/core';
+import { TableHead, makeStyles, Checkbox, IconButton } from '@material-ui/core';
 import api from '../../../../services/api';
 import { SharedSnackbarContext } from '../../../../providers/snackbar-provider';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -89,6 +90,28 @@ const TabelaImagens = forwardRef((props, ref) => {
             });
     }
 
+    const excluirImagem = (row) => {
+
+
+        api.delete(`/produtos/imagem/${row.idImagemProduto}`).then(response => {
+
+            setRows(rows.filter(item => item.idImagemProduto != row.idImagemProduto));
+
+            openSnackbar('Imagem excluida com sucesso.', 'success');
+        })
+            .catch((error) => {
+
+                let response = error.response;
+
+                if (response && response.status === 400) {
+
+                    openSnackbar(response.data.mensagem, 'warning');
+                } else {
+
+                    openSnackbar('Ocorreu um erro não tratado pelo servidor.', 'error');
+                }
+            });
+    }
 
     React.useEffect(pesquisar, []);
 
@@ -106,6 +129,7 @@ const TabelaImagens = forwardRef((props, ref) => {
                         <TableCell>Código</TableCell>
                         <TableCell>Localização</TableCell>
                         <TableCell>Imagem</TableCell>
+                        <TableCell>Ações</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -122,6 +146,11 @@ const TabelaImagens = forwardRef((props, ref) => {
                                 <TableCell>{row.idImagemProduto}</TableCell>
                                 <TableCell>{row.local}</TableCell>
                                 <TableCell><img src={row.local} height={50} alt="" /></TableCell>
+                                <TableCell>
+                                    <IconButton onClick={() => excluirImagem(row)} style={{ paddingLeft: 5, paddingRight: 5, paddingTop: 0, paddingBottom: 0 }}>
+                                        <DeleteIcon color='secondary' />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))
                     }

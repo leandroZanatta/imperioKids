@@ -18,7 +18,7 @@ export default function EstruturaMercadologica(params) {
     const handleClick = (event, item) => {
         event.preventDefault();
 
-        history.push(`/?category=${item.codigoCategoria}`)
+        history.push(`/loja/?category=${item.codigoCategoria}`)
     }
 
     return (
