@@ -80,6 +80,8 @@ export default function CadastroProduto(props) {
                     rowsPerPage={20}
                     onValueChange={item => handleChange('codigoCategoria', item != null ? item.idCategoria : null)}
                     formatValue={(item) => item.idCategoria + ' - ' + item.descricao}
+                    filtrarExcluidos={true}
+                    value={data.codigoCategoria}
                     data={{
                         numerolinhas: 20,
                         key: 'idCategoria',

@@ -9,7 +9,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import { useHistory } from 'react-router-dom';
 import { SharedSnackbarContext } from '../../../../providers/snackbar-provider';
 import api from '../../../../services/api';
-
+import priceImg from '../../../../assets/price.png';
 export default function TabelaProdutos() {
 
     const history = useHistory();
@@ -23,6 +23,11 @@ export default function TabelaProdutos() {
     const handleEdit = (row) => {
 
         history.push('/admin/cadastro-produtos', row);
+    }
+
+    const viewPrice = (row) => {
+
+        history.push('/admin/listar-precos', row);
     }
 
     const handleImages = (row) => {
@@ -46,6 +51,14 @@ export default function TabelaProdutos() {
         }).catch(error => apiError(error));
     }
 
+    const montarEstrutura = (estrutura) => {
+
+        if (estrutura) {
+            return estrutura.map(item => <span key={item.idCategoria}>{item.descricao + '/'}</span>)
+        }
+
+        return <span>/</span>
+    }
 
 
     const apiError = (error) => {
@@ -69,9 +82,10 @@ export default function TabelaProdutos() {
                 url: 'produtos',
                 columns: [
                     { label: 'Código', name: 'idProduto' },
+                    { label: 'Estrutura Mercadologica', name: 'estruturaMercadologica', render: montarEstrutura },
                     { label: 'Descrição', name: 'descricao' }
                 ],
-                actionWidth: 140,
+                actionWidth: 180,
                 actions: [
                     {
                         onClick: handleEdit,
@@ -87,6 +101,10 @@ export default function TabelaProdutos() {
                     }, {
                         onClick: handleImages,
                         icon: <ImageIcon color='primary' />,
+                    }, {
+                        onClick: viewPrice,
+                        icon: <img src={priceImg} width={25} height={25} />
+
                     }
                 ]
             }

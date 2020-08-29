@@ -1,11 +1,22 @@
 import React, { useContext } from 'react';
-import { TextField, Container, makeStyles, Paper, Button } from '@material-ui/core';
+import { TextField, Container, makeStyles, Paper, Button, InputLabel, FormControl, Input, FormControlLabel } from '@material-ui/core';
 import api from '../../../services/api';
 import { useHistory } from 'react-router-dom';
-import Pesquisa from '../../../components/pesquisa';
 import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
+import MoneyInput from '../../../components/money-input';
+
 
 const useStyles = makeStyles((theme) => ({
+    currency: {
+        marginTop: 16,
+        background: 'none',
+        height: 30,
+        border: 'none'
+    },
+    formControl: {
+        marginTop: theme.spacing(1),
+        height: 45
+    },
     container: {
         padding: theme.spacing(5, 3, 0, 3)
     },
@@ -16,9 +27,19 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function CadastrarCategorias(props) {
+export default function CadastroPrecos(props) {
 
-    const dataEmpty = { idCategoria: '', descricao: '' };
+    let dataAtual = new Date();
+    let novoDia = new Date();
+    novoDia.setDate(dataAtual.getDate() + 1)
+
+    const dataEmpty = {
+        idPrecotemporario: '',
+        codigoProduto: '',
+        preco: 0,
+        dataInicio: dataAtual.toISOString().substr(0, 11) + dataAtual.toLocaleTimeString().substring(0, 5),
+        dataTermino: novoDia.toISOString().substr(0, 11) + '00:00'
+    };
 
     const { state } = props.location;
 
@@ -30,13 +51,11 @@ export default function CadastrarCategorias(props) {
 
 
     const handleChange = (event) => {
+
         setData({ ...data, [event.target.name]: event.target.value });
     }
 
-    const goBack = () => {
 
-        history.push('/admin/categorias');
-    }
 
     const handleSubmit = (event) => {
 
@@ -45,7 +64,7 @@ export default function CadastrarCategorias(props) {
 
                 openSnackbar('Categoria cadastrada com sucesso', 'success');
 
-                goBack();
+                history.goBack()
             })
             .catch((error) => {
 
@@ -65,33 +84,41 @@ export default function CadastrarCategorias(props) {
         <Paper className={classes.container}>
             <form noValidate>
                 <TextField
-                    name='idCategoria'
-                    value={data.idCategoria}
+                    name='idPrecotemporario'
+                    value={data.idPrecotemporario}
                     label="Código"
                     disabled={true}
                 />
-                <Pesquisa
-                    codigoPesquisa={1}
-                    rowsPerPage={20}
-                    onValueChange={(item) => setData({ ...data, codigoCategoria: item != null ? item.idCategoria : null })}
-                    formatValue={(item) => item.idCategoria + ' - ' + item.descricao}
-                    data={{
-                        numerolinhas: 20,
-                        key: 'idCategoria',
-                        url: 'categorias',
-                        columns: [
-                            { label: 'Código', name: 'idCategoria' },
-                            { label: 'Descrição', name: 'descricao' }
-                        ]
-                    }}
-                    value={data.codigoCategoria}
-                    titulo="Categoria" />
+
+                <MoneyInput
+                    fullWidth
+                    label="Preço"
+                    name='preco'
+                    value={data.preco}
+                    onChange={(valor) => handleChange({ target: { name: 'preco', value: valor } })}
+                />
+
                 <TextField
-                    name='descricao'
-                    value={data.descricao}
+                    type="datetime-local"
+                    defaultValue={data.dataInicio}
+                    name='dataInicio'
                     onChange={handleChange}
                     fullWidth={true}
-                    label="Descrição"
+                    label="Data de Início"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />
+                <TextField
+                    type="datetime-local"
+                    name='dataTermino'
+                    defaultValue={data.dataTermino}
+                    onChange={handleChange}
+                    fullWidth={true}
+                    label="Data Fim"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
                 <Container className={classes.containerAcao}>
                     <Button
@@ -101,7 +128,7 @@ export default function CadastrarCategorias(props) {
                         Salvar
                     </Button>
                     <Button
-                        onClick={goBack}
+                        onClick={() => history.goBack()}
                         style={{ marginLeft: 5 }}
                         variant='contained'
                         color='secondary'>
@@ -110,7 +137,5 @@ export default function CadastrarCategorias(props) {
                 </Container>
             </form>
         </Paper >
-
-
     );
 }

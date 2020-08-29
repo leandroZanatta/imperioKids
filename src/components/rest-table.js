@@ -84,7 +84,6 @@ export default function RestTable(props) {
 
         });
     }
-    React.useEffect(pesquisar, []);
     React.useEffect(pesquisar, [page]);
 
     return (
@@ -128,7 +127,14 @@ export default function RestTable(props) {
                         rows.map((row) => (
                             <TableRow key={row[props.data.key]}>
                                 {
-                                    props.data.columns.map((column) => <TableCell>{row[column.name]}</TableCell>)
+                                    props.data.columns.map((column) => {
+
+                                        if (column.render) {
+                                            return (<TableCell>{column.render(row[column.name])}</TableCell>)
+                                        }
+
+                                        return (<TableCell>{row[column.name]}</TableCell>)
+                                    })
                                 }{props.data.actions &&
                                     <TableCell style={{ width: props.data.actionWidth ? props.data.actionWidth : 100 }}> {
 

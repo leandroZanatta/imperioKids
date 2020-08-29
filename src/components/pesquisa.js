@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 function SimpleDialog(props) {
 
     const classes = useStyles();
-    const { onClose, open, titulo, data } = props;
+    const { onClose, open, titulo, data, filtrarExcluidos } = props;
     const [rows, setRows] = React.useState([]);
     const [valorPesquisa, setValorPesquisa] = React.useState('');
     const [page, setPage] = React.useState(0);
@@ -59,7 +59,8 @@ function SimpleDialog(props) {
             params: {
                 valorPesquisa: valorPesquisa,
                 pagina: page,
-                registros: data.numerolinhas
+                registros: data.numerolinhas,
+                filtrarExcluidos: filtrarExcluidos
             }
         }).then(response => {
 
@@ -82,7 +83,6 @@ function SimpleDialog(props) {
         onClose(value);
     };
 
-    React.useEffect(pesquisar, []);
     React.useEffect(pesquisar, [page]);
 
     return (
@@ -151,12 +151,16 @@ SimpleDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     selectedValue: PropTypes.string.isRequired,
     titulo: PropTypes.string.isRequired,
-    data: PropTypes.string.isRequired
+    data: PropTypes.string.isRequired,
+    filtrarExcluidos: PropTypes.bool.isRequired,
+    value: PropTypes.string.isRequired
 };
+
+
 
 export default function Pesquisa(props) {
     const [open, setOpen] = React.useState(false);
-    const { titulo, data, onValueChange, formatValue } = props;
+    const { titulo, data, onValueChange, formatValue, filtrarExcluidos, value } = props;
     const [selectedValue, setSelectedValue] = React.useState('');
 
     const handleClickOpen = () => {
@@ -173,6 +177,26 @@ export default function Pesquisa(props) {
         onValueChange(value);
     };
 
+    const pesquisarId = (id) => {
+
+        api.get(`${data.url}/${id}`).then(response => {
+
+            const retorno = response.data;
+
+            let valueString = retorno != null ? formatValue(retorno) : '';
+
+            setSelectedValue(valueString)
+
+        }).catch(function (error) {
+
+        });
+    }
+
+    if (value) {
+
+        pesquisarId(value)
+    }
+
     return (
         <div>
             <TextField
@@ -187,8 +211,9 @@ export default function Pesquisa(props) {
                         </IconButton>
                 }}
             />
-
-            <SimpleDialog titulo={titulo} data={data} open={open} onClose={handleClose} />
+            {
+                open && <SimpleDialog filtrarExcluidos={filtrarExcluidos} titulo={titulo} data={data} open={open} onClose={handleClose} />
+            }
         </div>
     );
 }

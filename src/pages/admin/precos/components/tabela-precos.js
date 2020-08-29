@@ -1,45 +1,34 @@
 import React, { useContext } from 'react';
 import RestTable from '../../../../components/rest-table';
+import { Button } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CachedIcon from '@material-ui/icons/Cached';
 import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from 'react-router-dom';
 import api from '../../../../services/api';
 import { SharedSnackbarContext } from '../../../../providers/snackbar-provider';
-import { Button, Breadcrumbs } from '@material-ui/core';
 
-export default function TabelaCategorias() {
+export default function TabelaPrecos(props) {
 
+    const { codigoProduto } = props
     const history = useHistory();
     const { openSnackbar } = useContext(SharedSnackbarContext);
-
     const abrircadastro = () => {
 
-        history.push('/admin/cadastro-categorias')
+        history.push('/admin/cadastro-precos', { codigoProduto: codigoProduto })
     }
 
     const handleEdit = (row) => {
 
-        history.push('/admin/cadastro-categorias', row);
+        history.push('/admin/cadastro-precos', row);
     }
 
     const handleDelete = (row) => {
 
-        api.delete(`/categorias/${row.idCategoria}`).then(() => {
-            row.dataExclusao = new Date();
-            openSnackbar('Categoria excluida com sucesso', 'success');
+        api.delete(`/produto-precos/${row.idProdutoPreco}`).then(() => {
+            openSnackbar('Produto excluido com sucesso', 'success');
         }).catch(error => apiError(error));
     }
-
-    const handleReinclude = (row) => {
-
-        api.put(`/categorias/${row.idCategoria}`).then(() => {
-            row.dataExclusao = null;
-            openSnackbar('Categoria reincluida com sucesso', 'success');
-        }).catch(error => apiError(error));
-    }
-
 
     const apiError = (error) => {
 
@@ -55,24 +44,13 @@ export default function TabelaCategorias() {
         }
     }
 
-    const montarEstrutura = (estrutura) => {
-
-        if (estrutura) {
-            return estrutura.map(item => <span key={item.idCategoria}>{item.descricao + '/'}</span>)
-        }
-
-        return <span>/</span>
-    }
-
     return (
         <div>
-
             <RestTable data={{
-                key: 'idCategoria',
-                url: 'categorias',
+                key: 'idProdutoPreco',
+                url: `produto-precos/${codigoProduto}/`,
                 columns: [
                     { label: 'Código', name: 'idCategoria' },
-                    { label: 'Estrutura Mercadologica', name: 'estruturaMercadologica', render: montarEstrutura },
                     { label: 'Descrição', name: 'descricao' },
                     { label: 'Produtos', name: 'numeroProdutos' }
                 ], actions: [
@@ -83,10 +61,6 @@ export default function TabelaCategorias() {
                         condition: item => item.dataExclusao == null,
                         onClick: handleDelete,
                         icon: <DeleteIcon color='secondary' />,
-                    }, {
-                        condition: item => item.dataExclusao != null,
-                        onClick: handleReinclude,
-                        icon: <CachedIcon color='primary' />,
                     }
                 ]
             }
@@ -96,8 +70,6 @@ export default function TabelaCategorias() {
                    Adicionar
             </Button>
             </RestTable>
-
         </div>
     );
-
 }
