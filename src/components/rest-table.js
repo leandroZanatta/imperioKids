@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -24,10 +24,20 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function RestTable(props) {
+const RestTable = forwardRef((props, ref) => {
+    useImperativeHandle(
+        ref,
+        () => ({
+            reload() {
+                pesquisar();
+            }
+        }),
+    )
+
     const classes = useStyles();
 
-    const { children } = props;
+    const { children, pesquisable } = props;
+
     const [rows, setRows] = React.useState([]);
     const numerolinhas = 5;
     const [valorPesquisa, setValorPesquisa] = React.useState('');
@@ -84,15 +94,21 @@ export default function RestTable(props) {
 
         });
     }
+
+    const isPesquisable = () => pesquisable == null || pesquisable
+
+    const isHeaderVisible = () => isPesquisable() || children
+
+
     React.useEffect(pesquisar, [page]);
 
     return (
         <TableContainer component={Paper}>
-            <div className={classes.cabecalho}>
+            {isHeaderVisible() && < div className={classes.cabecalho}>
                 <div className={classes.cabecalhoBotoes}>
                     {children}
                 </div>
-                <TextField
+                {isPesquisable() && <TextField
                     id="pesquisa"
                     value={valorPesquisa}
                     size="small"
@@ -108,7 +124,9 @@ export default function RestTable(props) {
                             </IconButton>,
                     }}
                 />
+                }
             </div>
+            }
             <Table>
                 <TableHead>
                     <TableRow key={props.data.key}>
@@ -160,4 +178,7 @@ export default function RestTable(props) {
             />
         </TableContainer >
     );
-}
+})
+
+export default RestTable;
+

@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme) => ({
         borderStyle: 'solid',
         borderColor: '#CCC',
         marginBottom: theme.spacing(2),
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '&& img': {
+            maxWidth: "100%"
+        }
     },
 }));
 
@@ -40,7 +43,7 @@ export default function ItemVenda(props) {
         <Grid item xs={6} sm={4} md={3}>
 
             <div className={classes.cardPricing} onClick={exibirDetalheProduto}>
-                <img src={row.imageUrl} height={250} alt="" />
+                <img src={row.imageUrl} alt="" />
                 <Typography color="textSecondary">
                     {row.descricao}
                 </Typography>

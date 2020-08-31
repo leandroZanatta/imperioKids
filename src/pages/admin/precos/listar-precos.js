@@ -8,7 +8,7 @@ export default function ListarPrecos(props) {
     return (
         <div>
 
-            <TabelaPrecos codigoProduto={state.idProduto} />
+            <TabelaPrecos codigoProduto={state.idProduto} precoBase={state.preco} />
         </div>
     );
 }

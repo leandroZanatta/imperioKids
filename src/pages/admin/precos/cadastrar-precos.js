@@ -4,6 +4,7 @@ import api from '../../../services/api';
 import { useHistory } from 'react-router-dom';
 import { SharedSnackbarContext } from '../../../providers/snackbar-provider';
 import MoneyInput from '../../../components/money-input';
+import { setHours, parseDate } from '../../../utils/date-format';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,11 +35,11 @@ export default function CadastroPrecos(props) {
     novoDia.setDate(dataAtual.getDate() + 1)
 
     const dataEmpty = {
-        idPrecotemporario: '',
+        idPrecoTemporario: '',
         codigoProduto: '',
         preco: 0,
-        dataInicio: dataAtual.toISOString().substr(0, 11) + dataAtual.toLocaleTimeString().substring(0, 5),
-        dataTermino: novoDia.toISOString().substr(0, 11) + '00:00'
+        dataInicio: parseDate(dataAtual),
+        dataTermino: setHours(novoDia, '00', '00')
     };
 
     const { state } = props.location;
@@ -59,10 +60,10 @@ export default function CadastroPrecos(props) {
 
     const handleSubmit = (event) => {
 
-        api.post('categorias', data)
+        api.post(`precoTemporario/${data.codigoProduto}`, data)
             .then(() => {
 
-                openSnackbar('Categoria cadastrada com sucesso', 'success');
+                openSnackbar('Preço temporário cadastrado com sucesso', 'success');
 
                 history.goBack()
             })
@@ -84,14 +85,15 @@ export default function CadastroPrecos(props) {
         <Paper className={classes.container}>
             <form noValidate>
                 <TextField
-                    name='idPrecotemporario'
-                    value={data.idPrecotemporario}
+                    name='idPrecoTemporario'
+                    value={data.idPrecoTemporario}
                     label="Código"
                     disabled={true}
                 />
 
                 <MoneyInput
                     fullWidth
+                    autoFocus
                     label="Preço"
                     name='preco'
                     value={data.preco}

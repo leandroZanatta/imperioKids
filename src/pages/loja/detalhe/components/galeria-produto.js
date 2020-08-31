@@ -26,7 +26,7 @@ export default function GaleriaProduto(params) {
             disableSwipe
             slideDuration={0}
             showThumbnails={true}
-            showFullscreenButton={true}
+            showFullscreenButton={false}
             showPlayButton={false}
             autoPlay={false}
             showBullets={false}

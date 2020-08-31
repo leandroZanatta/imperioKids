@@ -1,23 +1,20 @@
 import React from 'react';
 import { makeStyles, Checkbox, Paper, Card, CardHeader, CardContent } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import api from '../../../../services/api';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { adicionarParametroURL } from '../../../../utils/url-parameters';
 
 const useStyles = makeStyles((theme) => ({
 
-    cardTitle: {
-        height: 45,
-        backgroundColor: '#0081BD',
-        color: "#FAFAFA"
-    },
-
-    cardContent: {
-        padding: 0,
+    menuDetails: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: theme.spacing(0)
     },
 
     acordion: {
@@ -71,6 +68,7 @@ export default function Categorias(props) {
     const [categorias, setCategorias] = React.useState([]);
     const { categoriaSelecionada } = props;
     const history = useHistory();
+    const url = useLocation().search;
 
     const pesquisar = () => {
 
@@ -97,7 +95,7 @@ export default function Categorias(props) {
                 onClick={(event) => {
                     event.stopPropagation();
 
-                    history.push(`/loja/?category=${categoria.codigoCategoria}`)
+                    history.push(`/loja/${adicionarParametroURL(url, 'categoria', categoria.codigoCategoria)}`)
                 }}
             />
         )
@@ -132,6 +130,7 @@ export default function Categorias(props) {
     const renderComponentCategorias = (categoria) => {
 
         return (
+
             <Paper className={classes.cardCategoria}>
                 {
                     renderCheckbox(categoria)
@@ -152,13 +151,19 @@ export default function Categorias(props) {
     }
 
     return (
-        <Card>
-            <CardHeader className={classes.cardTitle} title="Categorias" />
-            <CardContent className={classes.cardContent}>
+        <Accordion >
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+            >
+                <Typography>Categorias</Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.menuDetails}>
                 {
                     categorias.map(categoria => renderCategoria(categoria))
                 }
-            </CardContent>
-        </Card>
+            </AccordionDetails>
+        </Accordion>
     )
 }

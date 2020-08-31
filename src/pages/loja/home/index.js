@@ -9,12 +9,14 @@ import ItemVenda from './components/item-venda';
 import SliderDestaques from './components/slider-destaques';
 import { useParams, useLocation } from 'react-router-dom';
 import Categorias from './components/categorias';
+import Destaques from './components/destaques';
 
 const useStyles = makeStyles((theme) => ({
 
     root: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        paddingTop: theme.spacing(1)
     },
     menuLateral: {
         width: 350,
@@ -24,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     heroContent: {
         padding: theme.spacing(2, 0, 6),
+        display: 'none',
     },
 
     paginacao: {
@@ -95,11 +98,12 @@ export default function HomePage() {
 
             <Container className={classes.root}>
                 <Container className={classes.menuLateral}>
-                    <Categorias categoriaSelecionada={query.get('category')} />
+                    <Destaques destaqueSelecionado={query.get('destaque')} />
+                    <Categorias categoriaSelecionada={query.get('categoria')} />
                 </Container>
                 <Container>
                     <Container maxWidth="sm" component="main" className={classes.heroContent}>
-                        <SliderDestaques />
+
                     </Container>
 
                     <Container maxWidth="md" component="main">
